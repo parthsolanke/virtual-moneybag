@@ -1,2 +1,2 @@
-# virtual-moneybag
+# Virtual Moneybag
 Digital wallet 💰
