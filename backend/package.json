@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/100xdevs-cohort-2/paytm#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.1",
+    "zod": "^3.22.4"
   }
 }
