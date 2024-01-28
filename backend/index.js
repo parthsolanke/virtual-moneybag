@@ -3,7 +3,6 @@ const rootRouter = require('./routes/index');
 const cors = require('cors');
 
 const PORT = 3000;
-
 const app = express();
 
 app.use(cors());
