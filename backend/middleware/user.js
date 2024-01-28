@@ -43,12 +43,14 @@ async function userSigninAuth(req, res, next) {
             return res.status(411).json({ message: "Incorrect inputs" });
         }
 
-        const userExists = await User.findOne({
-            username: req.body.username,
-            password: req.body.password
-        });
+        const userExists = await User.findOne({ username: req.body.username });
         if (!userExists) {
-            return res.status(411).json({ message: "Incorrect inputs" });
+            return res.status(411).json({ message: "User not found" });
+        } else {
+            const validPassword = await userExists.validatePassword(req.body.password);
+            if (!validPassword) {
+                return res.status(411).json({ message: "Incorrect password" });
+            }
         }
 
         req.user = userExists;

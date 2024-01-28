@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
 
 // connect to db
 mongoose.connect("mongodb+srv://parthsolanke:" + process.env.MONGO_PW + "@cluster0.u7lcir4.mongodb.net/payment-app")
@@ -20,10 +21,9 @@ const userSchema = new mongoose.Schema({
         minLength: 3,
         maxLength: 30
     },
-    password: {
+    password_hash: {
         type: String,
         required: true,
-        minLength: 6
     },
     firstName: {
         type: String,
@@ -39,10 +39,21 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// hashing and validating methods
+userSchema.methods.generateHash = async function(password) {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+    return passwordHash;
+};
+
+userSchema.methods.validatePassword = async function(password) {
+    const validPassword = await bcrypt.compare(password, this.password_hash);
+    return validPassword;
+};
+
 // model
 const User = mongoose.model("User", userSchema);
 
-// export
 module.exports = {
     User
 };

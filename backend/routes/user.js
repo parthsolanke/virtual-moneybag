@@ -9,14 +9,16 @@ const router = express.Router();
 // signup route
 router.post("/signup", userSignupAuth, async (req, res) => {
     try {
-        const newUser = await User.create({
+        const newUser = new User({
             username: req.body.username,
-            password: req.body.password,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-        })
-        const userId = newUser._id;
+        });
 
+        newUser.password_hash = await newUser.generateHash(req.body.password);
+        await newUser.save();
+        
+        const userId = newUser._id;
         const token = jwt.sign({ userId: userId }, JWT_SECRET);
 
         res.status(200).json({ 
