@@ -12,13 +12,11 @@ const signupBody = zod.object({
 // Signup auth middleware
 async function userSignupAuth(req, res, next) {
     try {
-        // validate req body
         const { success } = signupBody.safeParse(req.body);
         if (!success) {
             return res.status(411).json({ message: "Incorrect inputs" });
         }
 
-        // check if user exists
         const userExists = await User.findOne({ username: req.body.username });
         if (userExists) {
             return res.status(411).json({ message: "Email already taken" });
@@ -40,16 +38,17 @@ const signinBody = zod.object({
 // Signin auth middleware
 async function userSigninAuth(req, res, next) {
     try {
-        // validate req body
         const { success } = signinBody.safeParse(req.body);
         if (!success) {
             return res.status(411).json({ message: "Incorrect inputs" });
         }
 
-        // check if user exists
-        const userExists = await User.findOne({ username: req.body.username });
+        const userExists = await User.findOne({
+            username: req.body.username,
+            password: req.body.password
+        });
         if (!userExists) {
-            return res.status(411).json({ message: "Email not found" });
+            return res.status(411).json({ message: "Incorrect inputs" });
         }
 
         req.user = userExists;
@@ -60,7 +59,39 @@ async function userSigninAuth(req, res, next) {
     }
 }
 
+// middleware for jwt verification
+function verifyToken(req, res, next) {
+    try {
+
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+
+            if (decoded.userID) {
+                req.userId = decoded.userID;
+                next();
+            }
+
+            return res.status(403).json({ message: "Access denied" });
+
+        } catch (err) {
+            return res.status(403).json({ message: err.message });
+        }
+
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
 module.exports = {
     userSignupAuth,
-    userSigninAuth
+    userSigninAuth,
+    verifyToken
 };
