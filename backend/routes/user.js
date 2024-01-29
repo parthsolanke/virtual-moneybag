@@ -47,7 +47,7 @@ router.post("/signin", userSigninAuth, async (req, res) => {
 });
 
 
-// user info update route
+// user metadata update route
 router.put("/update", verifyToken, userUpdateAuth, async (req, res) => {
     try {
         const isUpdate = await User.updateOne({ _id: req.userId }, { $set: req.body })
@@ -88,6 +88,33 @@ router.put("/update/password", verifyToken, async (req, res) => {
 
         res.status(200).json({ message: "Password updated successfully" });
 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// get user route
+router.get("/bulk", verifyToken, async (req, res) => {
+    const filter = req.query.filter || "";
+    try {
+        const users = await User.find({
+            $or: [
+                { username: { $regex: filter, $options: "i" } },
+                { firstName: { $regex: filter, $options: "i" } },
+                { lastName: { $regex: filter, $options: "i" } }
+            ]
+        })
+        
+        res.status(200).json({
+            users: users.map((user) => {
+                return {
+                    _id: user._id,
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName
+                }
+            })
+        });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
