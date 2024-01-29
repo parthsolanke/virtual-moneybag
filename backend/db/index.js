@@ -10,7 +10,7 @@ mongoose.connect("mongodb+srv://parthsolanke:" + process.env.MONGO_PW + "@cluste
         console.log("Error connecting to Database", err);
     });
 
-// schema
+// user schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -51,9 +51,27 @@ userSchema.methods.validatePassword = async function(password) {
     return validPassword;
 };
 
-// model
+// user model
 const User = mongoose.model("User", userSchema);
 
+// account schema
+const accountSchema = new mongoose.Schema({
+    balance: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId, // Reference to User model
+        required: true,
+        ref: "User"
+    }
+});
+
+// account model
+const Account = mongoose.model("Account", accountSchema);
+
 module.exports = {
-    User
+    User,
+    Account
 };
