@@ -1,4 +1,6 @@
 const zod = require('zod');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config');
 const { User } = require('../db/index');
 
 // signup body schema
@@ -61,10 +63,34 @@ async function userSigninAuth(req, res, next) {
     }
 }
 
+// update body schema
+const updateBody = zod.object({
+    firstName: zod.string(),
+    lastName: zod.string().optional()
+});
+
+// Update auth middleware
+async function userUpdateAuth(req, res, next) {
+    try {
+        const { success } = updateBody.safeParse(req.body);
+        if (!success) {
+            return res.status(411).json({ message: "Incorrect inputs" });
+        }
+
+        const userExists = await User.findById(req.userId);
+        if (!userExists) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        next();
+        
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
 // middleware for jwt verification
 function verifyToken(req, res, next) {
-    try {
-
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -76,24 +102,17 @@ function verifyToken(req, res, next) {
         try {
             const decoded = jwt.verify(token, JWT_SECRET);
 
-            if (decoded.userID) {
-                req.userId = decoded.userID;
-                next();
-            }
-
-            return res.status(403).json({ message: "Access denied" });
+            req.userId = decoded.userId;
+            next();
 
         } catch (err) {
             return res.status(403).json({ message: err.message });
         }
-
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
 }
 
 module.exports = {
     userSignupAuth,
     userSigninAuth,
+    userUpdateAuth,
     verifyToken
 };

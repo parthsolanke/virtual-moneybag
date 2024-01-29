@@ -1,8 +1,9 @@
+const zod = require('zod');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { User } = require('../db/index');
 const { JWT_SECRET } = require('../config');
-const { userSignupAuth, userSigninAuth } = require('../middleware/user');
+const { userSignupAuth, userSigninAuth, verifyToken, userUpdateAuth } = require('../middleware/user');
 
 const router = express.Router();
 
@@ -39,6 +40,53 @@ router.post("/signin", userSigninAuth, async (req, res) => {
             message: "User signed in successfully",
             token: token
         });
+
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+
+// user info update route
+router.put("/update", verifyToken, userUpdateAuth, async (req, res) => {
+    try {
+        const isUpdate = await User.updateOne({ _id: req.userId }, { $set: req.body })
+        if (isUpdate.modifiedCount === 0) {
+            return res.status(411).json({ message: "Error in updating info" });
+        }
+
+        res.status(200).json({ message: "User updated successfully" });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+const updatePasswordBody = zod.object({
+    oldPassword: zod.string(),
+    newPassword: zod.string()
+});
+// update password route
+router.put("/update/password", verifyToken, async (req, res) => {
+    try {
+        const { success } = updatePasswordBody.safeParse(req.body);
+        if (!success) {
+            return res.status(411).json({ message: "Incorrect inputs" });
+        }
+
+        const userExists = await User.findById(req.userId);
+        if (!userExists) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await userExists.validatePassword(req.body.oldPassword);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect old password" });
+        }
+
+        userExists.password_hash = await userExists.generateHash(req.body.newPassword);
+        await userExists.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
 
     } catch (err) {
         res.status(400).json({ message: err.message });
