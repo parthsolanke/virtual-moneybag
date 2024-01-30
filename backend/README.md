@@ -138,3 +138,52 @@ Retrieve users based on specified filters.
   ```
 
   - Note: Filter search is non-case sensitive.
+
+## Account
+
+### Get account balance
+
+Retrieve the account balance of the logged in user.
+
+- **URL:** `/api/v1/account/balance`
+- **Method:** `GET`
+
+- **Request Headers:**
+
+  - Authorization: Bearer JWT-token
+
+- **Response:**
+
+  ```json
+  {
+      "balance": "balance"
+  }
+  ```
+
+### Transfer funds
+
+Transfer funds from the logged in user's account to another user's account.
+
+- **URL:** `/api/v1/account/transfer`
+- **Method:** `POST`
+
+- **Request Headers:**
+
+  - Authorization: Bearer JWT-token
+
+- **Request Body:**
+
+  ```json
+  {
+        "to": "_id",
+        "amount": "amount"
+  }
+  ```
+
+- **Response:**
+
+  ```json
+  {
+      "message": "Transfer successful"
+  }
+  ```
