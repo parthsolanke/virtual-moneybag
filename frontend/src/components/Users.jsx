@@ -4,14 +4,14 @@ import { Button } from "./Button"
 export const Users = () => {
     // Replace with backend call
     const [users, setUsers] = useState([{
-        firstName: "Harkirat",
-        lastName: "Singh",
+        firstName: "Jhon",
+        lastName: "Doe",
         _id: 1
     }]);
 
     return <>
         <div className="font-bold mt-6 text-lg">
-            Users
+            Users🫂
         </div>
         <div className="my-2">
             <input type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>

@@ -5,7 +5,7 @@ export const SendMoney = () => {
                 class="border h-min text-card-foreground max-w-md p-4 space-y-8 w-96 bg-white shadow-lg rounded-lg"
             >
                 <div class="flex flex-col space-y-1.5 p-6">
-                <h2 class="text-3xl font-bold text-center">Send Money</h2>
+                <h2 class="text-3xl font-bold text-center">Send Money💸</h2>
                 </div>
                 <div class="p-6">
                 <div class="flex items-center space-x-4">
@@ -20,7 +20,7 @@ export const SendMoney = () => {
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         for="amount"
                     >
-                        Amount (in Rs)
+                        Amount ₹
                     </label>
                     <input
                         type="number"
