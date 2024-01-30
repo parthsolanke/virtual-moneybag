@@ -68,7 +68,7 @@ ZOD for request schema validation, JWT for authentication and mongoose to connec
 
 **Request Headeres**
 
-Authorization: Bearer <JWT token>
+Authorization: Bearer JWT-token
 
 **Response**
 
