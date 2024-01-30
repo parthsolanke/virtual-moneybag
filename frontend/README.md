@@ -1,4 +1,4 @@
-# Digital Wallet Frontend Documentation
+# Frontend Docs
 
 This repository contains the frontend code for interacting with the Digital Wallet API. Below are details for the frontend application, including screenshots of key pages.
 
