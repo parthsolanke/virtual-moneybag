@@ -176,7 +176,7 @@ Transfer funds from the logged in user's account to another user's account.
   ```json
   {
         "to": "_id",
-        "amount": "amount"
+        "amount": amount
   }
   ```
 
