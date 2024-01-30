@@ -1,134 +1,140 @@
-# API Endpoints
+# API Documentation
+
+This repository contains the API documentation for a digital wallet system designed for user transactions. Below are the details of various endpoints available in the API.
 
 ## User
 
 ### Signup: Create a new user
-Used ZOD for request body schema validation, JWT and mongoose to connect to database create User model and save data to database along with bcrypt to hash password.
 
-**POST** `/api/v1/user/signup`
+Create a new user account with the provided information.
 
-**Request Body**
+- **URL:** `/api/v1/user/signup`
+- **Method:** `POST`
+- **Request Body:**
+  
+  ```json
+  {
+      "username": "email",
+      "password": "password",
+      "firstName": "firstName",
+      "lastName": "lastName"
+  }
+  ```
 
-```json
-{
-    "username": "email",
-    "password": "password",
-    "firstName": "firstName",
-    "lastName": "lastName"
-}
-```
+- **Response:**
 
-**Response**
+  ```json
+  {
+      "message": "User created successfully",
+      "token": "JWT token"
+  }
+  ```
 
-```json
-{
-    "message": "User created successfully",
-    "token": "JWT token"
-}
-```
-
-note: At the time of signup Account is created with random balance between 1000 to 10000 and the account table is connected to user table with one to one relationship.
+  - Note: During signup, an account is created with a random balance between 1000 to 10000, and the account is linked to the user with a one-to-one relationship.
 
 ### Signin: Login user
-Used ZOD for request body schema validation, JWT for authentication and mongoose to connect to database create User model and save data to database along with bcrypt to hash password.
 
-**POST** `/api/v1/user/signin`
+Authenticate and login a user with the provided credentials.
 
-**Request Body**
+- **URL:** `/api/v1/user/signin`
+- **Method:** `POST`
+- **Request Body:**
 
-```json
-{
-    "username": "email",
-    "password": "password"
-}
-```
+  ```json
+  {
+      "username": "email",
+      "password": "password"
+  }
+  ```
 
-**Response**
+- **Response:**
 
-```json
-{
-    "message": "User signed in successfully",
-    "token": "JWT token"
-}
-```
+  ```json
+  {
+      "message": "User signed in successfully",
+      "token": "JWT token"
+  }
+  ```
 
 ### User metadata update
-ZOD for request schema validation, middleware JWT authentication and mongoose to connect to database and update user data.
 
-**PUT** `/api/v1/user/update`
+Update user metadata with the specified information.
 
-**Request Body**
+- **URL:** `/api/v1/user/update`
+- **Method:** `PUT`
+- **Request Body:**
 
-```json
-{
-    "firstName": "firstName",
-    "lastName": "lastName"
-}
-```
+  ```json
+  {
+      "firstName": "firstName",
+      "lastName": "lastName"
+  }
+  ```
 
-**Request Headeres**
+- **Request Headers:**
 
-Authorization: Bearer JWT-token
+  - Authorization: Bearer JWT-token
 
-**Response**
+- **Response:**
 
-```json
-{
-    "message": "User updated successfully"
-}
-```
+  ```json
+  {
+      "message": "User updated successfully"
+  }
+  ```
 
 ### Update user password
-ZOD for request schema validation, middleware JWT authenticationn and mongoose to connect to database and update user password and bcrypt to decrypt and validate oldPassword and encrypt new.
 
-**PUT** `/api/v1/user/update/password`
+Update the user password.
 
-**Request Body**
+- **URL:** `/api/v1/user/update/password`
+- **Method:** `PUT`
+- **Request Body:**
 
-```json
-{
-    "oldPassword": "oldPassword",
-    "newPassword": "newPassword"
-}
-```
+  ```json
+  {
+      "oldPassword": "oldPassword",
+      "newPassword": "newPassword"
+  }
+  ```
 
-**Request Headeres**
+- **Request Headers:**
 
-Authorization: Bearer JWT-token
+  - Authorization: Bearer JWT-token
 
-**Response**
+- **Response:**
 
-```json
-{
-    "message": "Password updated successfully"
-}
-```
+  ```json
+  {
+      "message": "Password updated successfully"
+  }
+  ```
 
 ### Get Users by filter
-ZOD for request schema validation, middleware JWT authenticationn and mongoose to connect to database and get users by filter.
 
-**GET** `/api/v1/user/bulk?filter=filter`
+Retrieve users based on specified filters.
 
-Query params: filter="" || filter=firstName || filter=lastName || filter=username
+- **URL:** `/api/v1/user/bulk?filter=filter`
+- **Method:** `GET`
+- **Query Params:** filter="" || filter=firstName || filter=lastName || filter=username
 
-**Request Headeres**
+- **Request Headers:**
 
-Authorization: Bearer JWT-token
+  - Authorization: Bearer JWT-token
 
-**Response**
-    
-    ```json
-    {
-        "users": [
-            {
-                _id: "id",
-                "username": "email",
-                "firstName": "firstName",
-                "lastName": "lastName"
-            }
-        ]
-    }
-    ```
+- **Response:**
 
-note: (non-case sensitive filter search)
+  ```json
+  {
+      "users": [
+          {
+              "_id": "id",
+              "username": "email",
+              "firstName": "firstName",
+              "lastName": "lastName"
+          }
+      ]
+  }
+  ```
 
+  - Note: Filter search is non-case sensitive.
